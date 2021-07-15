@@ -11,5 +11,7 @@ namespace OpenFIS.Models.Competition
         public string City { get; set; }
         [Required]
         public string Country { get; set; }
+        public int? ConstructionPoint { get; set; }
+        public int? HillSize { get; set; }
     }
 }

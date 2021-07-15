@@ -16,6 +16,9 @@ namespace OpenFIS.Services
         Task<CompetitionPlace> GetCompetitionPlace(IPage page);
         Task<CompetitionSubtype> GetCompetitionSubtype(IPage page);
         Task<CompetitionType> GetCompetitionType(IPage page);
+        Task<CompetitionGenderType> GetCompetitionGenderType(IPage page);
+        Task<int?> GetCompetitionConstructionPoint(IPage page);
+        Task<int?> GetCompetitionHillSize(IPage page);
         Task<List<CompetitorResult>> GetCompetitorsResult(IPage page);
         Task<CompetitionResult> GetCompetitionResult(IPage page);
         CompetitionResult GetCompetitionResultById(int id);
@@ -49,23 +52,60 @@ namespace OpenFIS.Services
                 "Alpen Cup" => CompetitionType.AlpenCup,
                 "Children" => CompetitionType.Children,
                 "Continental Cup" => CompetitionType.ContinentalCup,
+                "European Youth Olympic Festival" => CompetitionType.EuropeanYouthOlympicFestival,
                 "Grand Prix" => CompetitionType.GrandPrix,
+                "FIS" => CompetitionType.Fis,
                 "FIS Cup" => CompetitionType.FisCup,
+                "Junior" => CompetitionType.Junior,
+                "FIS Junior World Ski Championships" => CompetitionType.JuniorWorldSkiChampionships,
                 "Olympic Winter Games" => CompetitionType.OlympicWinterGames,
                 "FIS Ski-Flying World Championships" => CompetitionType.SkiFlyingWorldChampionships,
                 "World Cup" => CompetitionType.WorldCup,
-                "Qualification" => CompetitionType.Qualification,
+                "World Ski Championships" => CompetitionType.WorldSkiChampionships,
+                "Qualification" or "Viessmann FIS Ski Jumping Qualification" => CompetitionType.Qualification,
+                "Universiade" => CompetitionType.Universiade,
+                "Youth Olympic Winter Games" => CompetitionType.YouthOlympicWinterGames,
                 _ => CompetitionType.NotAvailable
             };
         }
 
+        public async Task<CompetitionGenderType> GetCompetitionGenderType(IPage page)
+        {
+            string[] fromHtml = (await page.QuerySelectorAsync(".event-header__kind").Result.InnerTextAsync())?.Split(' ');
+            return fromHtml[0].Contains("Men") ? CompetitionGenderType.Men : CompetitionGenderType.Women;
+        }
+
+        public async Task<int?> GetCompetitionConstructionPoint(IPage page)
+        {
+            string[] fromHtml = (await page.QuerySelectorAsync(".event-header__kind").Result.InnerTextAsync())?.Split(' ');
+            if (fromHtml[^1].Contains("K"))
+            {
+                return Convert.ToInt32(fromHtml[^1].Replace("K", ""));
+            }
+
+            return null;
+        }
+
+        public async Task<int?> GetCompetitionHillSize(IPage page)
+        {
+            string[] fromHtml = (await page.QuerySelectorAsync(".event-header__kind").Result.InnerTextAsync())?.Split(' ');
+            if (fromHtml[^1].Contains("HS"))
+            {
+                return Convert.ToInt32(fromHtml[^1].Replace("HS", ""));
+            }
+
+            return null;
+        }
+
         public async Task<CompetitionPlace> GetCompetitionPlace(IPage page)
         {
-            string[] fromHtml = (await page.QuerySelectorAsync(".event-header__name > h1").Result.InnerTextAsync()).Split(' ');
+            string[] fromHtml = (await page.QuerySelectorAsync(".event-header__name > h1").Result.InnerTextAsync())?.Split(' ');
             return new CompetitionPlace()
             {
                 City = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(string.Join(' ', fromHtml[..^1]).ToLower()),
-                Country = fromHtml[^1].Replace("(", "").Replace(")", "")
+                Country = fromHtml[^1].Replace("(", "").Replace(")", ""),
+                ConstructionPoint = await GetCompetitionConstructionPoint(page),
+                HillSize = await GetCompetitionHillSize(page)
             };
         }
 

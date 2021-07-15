@@ -1,6 +1,6 @@
 # OpenFIS
 
-This is the project that attempts to create API around [FIS ski jumping results database](https://www.fis-ski.com/DB/general/?eventselection=&place=&sectorcode=JP&seasoncode=2022&categorycode=&disciplinecode=&gendercode=&racedate=&racecodex=&nationcode=&seasonmonth=07-2021&saveselection=-1&seasonselection=). Under the hood, the code uses Playwright as a scraper and PostgreSQL to supply a database.
+This is the project that attempts to create API around [FIS ski jumping results database](https://www.fis-ski.com/DB/general/?eventselection=&place=&sectorcode=JP&seasoncode=2022&categorycode=&disciplinecode=&gendercode=&racedate=&racecodex=&nationcode=&seasonmonth=07-2021&saveselection=-1&seasonselection=). Under the hood, the code uses Playwright as a scraper and PostgreSQL to supply a database. It's also my very first backend project :)
 
 ## Requirements
 
@@ -11,7 +11,8 @@ This is the project that attempts to create API around [FIS ski jumping results 
 
 1. Clone the repository
 2. Set valid PostgreSQL connection string using the ```dotnet user-secrets set "FisDb:ConnectionString" "<connection_string>"```
-3. dotnet run
+3. Run the ```dotnet ef database update``` command
+4. Run the ```dotnet run``` command
 
 
 ## Endpoints

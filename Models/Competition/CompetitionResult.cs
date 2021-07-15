@@ -6,8 +6,8 @@ namespace OpenFIS.Models.Competition
 {
     public class CompetitionResult
     {
-        [JsonIgnore]
         public int Id { get; set; }
+        public CompetitionGenderType CompetitionGenderType { get; set; }
         public CompetitionType CompetitionType { get; set; }
         public CompetitionPlace CompetitionPlace { get; set; }
         public string CompetitionDate { get; set; }
